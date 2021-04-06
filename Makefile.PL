@@ -21,7 +21,7 @@ my %WriteMakefileArgs = (
         #'Foo::Bar::Module' => '5.0401',
     },
     dist  => { COMPRESS => 'gzip -9f', SUFFIX => 'gz', },
-    clean => { FILES => 'File-Edit-*' },
+    clean => { FILES => '' },
 );
 
 # Compatibility with old versions of ExtUtils::MakeMaker
