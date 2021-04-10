@@ -1,6 +1,6 @@
 #!perl
 use strict; use warnings; use utf8; use 5.10.0;
-use Test::More tests => 7;
+use Test::More tests => 10;
 use Data::Dumper;
 
 use lib qw(./lib);
@@ -24,7 +24,7 @@ $got = join '', @{$ed->_lines};
 $exp = "  minSdkVersion 16\n  targetSdkVersion 29";
 is($got, $exp, $msg);
 
-$msg = '->_find_one - found ok';
+$msg = '->_find_one - match string with prefix';
 $ed = File::Edit->new;
 $ed->_lines(["  minSdkVersion 16\n","  targetSdkVersion 29"]);
 $ed->_find_one("targetSdkVersion 29");
@@ -32,11 +32,34 @@ $got = join '', @{$ed->found};
 $exp = '1';
 is($got, $exp, $msg);
 
-$msg = '->_find_one - line_re ok';
-$got = $ed->_line_re;
-$exp = qr/targetSdkVersion 29/;
+$msg = '->_find_one - match string with postfix';
+$ed = File::Edit->new;
+$ed->_lines(["  minSdkVersion 16\n","  targetSdkVersion 29 should work"]);
+$ed->_find_one("targetSdkVersion 29");
+$got = join '', @{$ed->found};
+$exp = '1';
 is($got, $exp, $msg);
 
+$msg = '->_find_one - should fail';
+$ed = File::Edit->new;
+$ed->_lines(["  minSdkVersion 16\n","  targetSdkVersion 19"]);
+$got = eval { $ed->_find_one("targetSdkVersion 29") };
+$exp = undef;
+is($got, $exp, $msg);
+
+$msg = '->_find_one - match multi-lines';
+$ed = File::Edit->new;
+$ed->_lines(["  minSdkVersion 16\n","  targetSdkVersion 29 \n multi-line works"]);
+$ed->_find_one("targetSdkVersion 29");
+$got = join '', @{$ed->found};
+$exp = '1';
+is($got, $exp, $msg);
+
+# Test that $o->_line_re stores regex
+$msg = '->_find_one - line_re stores regex';
+$got = "-- targetSdkVersion 29 --" =~ $ed->_line_re ? 1 : 0;
+$exp = 1;
+is($got, $exp, $msg);
 
 $msg = '->_replace_found ok';
 $ed = File::Edit->new;
