@@ -17,6 +17,9 @@ my %WriteMakefileArgs = (
         'Test::More' => '0',
     },
     PREREQ_PM => {
+        'Mojolicious'       => '8.33',
+        'Path::Tiny'        => '0.108',
+        'Carp'              => '0',
         #'ABC'              => '1.6',
         #'Foo::Bar::Module' => '5.0401',
     },
