@@ -95,7 +95,7 @@ sub _find_one {
     $o->_line_re($line_re);
 
     foreach my $l (@{$o->_lines}) {
-        push @{$o->found}, $n if $l =~ /\s*$line_re\s*/;
+        push @{$o->found}, $n if $l =~ $line_re;
         $n++;
     }
 
