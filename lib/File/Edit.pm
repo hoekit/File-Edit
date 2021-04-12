@@ -91,7 +91,7 @@ sub _find_one {
 
     # Init search result
     $o->found([]);
-    $line_re = ref $line_re eq 'Regexp' ? $line_re : qr/$line_re/;
+    $line_re = ref $line_re eq 'Regexp' ? $line_re : _qre($line_re);
     $o->_line_re($line_re);
 
     foreach my $l (@{$o->_lines}) {
@@ -120,6 +120,10 @@ sub _replace_found {
     }
 
     return $o;
+}
+sub _qre {  ## ($string) :> regex
+    my $quoted = quotemeta(shift);
+    return qr/$quoted/;
 }
 
 
