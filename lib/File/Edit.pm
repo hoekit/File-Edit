@@ -126,14 +126,25 @@ sub _qre {  ## ($string) :> regex
     return qr/$quoted/;
 }
 
+sub swap { ## ($s1 :>STRING, $s2 :>STRING) :> SELF
+    my ($self,$s1,$s2) = @_;
+
+    # Find the line indexes
+    my $idx_1 = $self->_find_one($s1)->found->[0];
+    my $idx_2 = $self->_find_one($s2)->found->[0];
+
+    # Swap the lines
+    my $tmp = $self->_lines->[$idx_1];
+    $self->_lines->[$idx_1] = $self->_lines->[$idx_2];
+    $self->_lines->[$idx_2] = $tmp;
+
+    return $self;
+}
+
 
 =head1 NAME
 
 File::Edit - A naive, probably buggy, file editor.
-
-=head1 VERSION
-
-Version 0.0.4
 
 =cut
 =head1 SYNOPSIS
@@ -153,11 +164,14 @@ Version 0.0.4
               ->save('build.gradle')
               ;
 
-=head1 EXPORT
+    # Swap lines, save to file
+    File::Edit->new()
+              ->text("  Do this first\n  Now do that\n  Don't do this")
+              ->swap('Do this', 'do that')
+              ->save('todo.txt')
+              ;
 
-A list of functions that can be exported.  You can delete this section
-if you don't export anything, such as for a purely object-oriented module.
-
+=cut
 =head1 METHODS
 
 =head2 new
@@ -166,24 +180,34 @@ if you don't export anything, such as for a purely object-oriented module.
 
     Reads in a file for editing.
 
-=head2 text
+=cut
+=head2   text
 
     my $fe = File::Edit->new()->text(some_text);
 
     Reads in some text for editing.
 
-=head2 replace
+=cut
+=head2   replace
 
     $fe->replace($old, $new);
 
     Replace the $old portion of a single line with $new.
 
-=head2 save
+=cut
+=head2   save
 
     my $fe = File::Edit->new("some_file.txt");
     $fe->save();                # Saves to "some_file.txt"
     $fe->save("other.txt")      # Saves to "other.txt"
 
+=cut
+=head2   swap( $text_1, $text_2 )
+
+The swap($s1, $s2) method finds the line containing string $s1 and finds
+the line containg string $s2 and swaps both lines.
+
+=cut
 =head1 AUTHOR
 
 Hoe Kit CHEW, C<< <hoekit at gmail.com> >>
