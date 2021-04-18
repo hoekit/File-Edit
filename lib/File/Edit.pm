@@ -8,6 +8,7 @@ has 'file';
 has 'found';        # Line numbers of found lines. ArrayRef.
 has '_lines';       # Text in the form of lines. ArrayRef.
 has '_line_re';     # Regex for _find_one
+has 'at';           # Index into _lines for actions such as insert
 
 sub new {
     @_ > 1
@@ -140,7 +141,14 @@ sub swap { ## ($s1 :>STRING, $s2 :>STRING) :> SELF
 
     return $self;
 }
+sub insert { ## ($line :>STRING) :> SELF
+    my ($self,$line) = @_;
 
+    croak "Location to insert not defined" unless defined $self->at;
+    splice @{$self->_lines}, $self->at, 0, $line;
+
+    return $self;
+}
 
 =head1 NAME
 
@@ -171,7 +179,15 @@ File::Edit - A naive, probably buggy, file editor.
               ->save('todo.txt')
               ;
 
+    # Insert at line index, save to file
+    File::Edit->new()
+              ->text("  Line index 0\n  Line index 1\n  Line index 2")
+              ->at(1)->insert('  Inserted line\n')
+              ->save('todo.txt')
+              ;
+
 =cut
+
 =head1 METHODS
 
 =head2 new
@@ -208,6 +224,22 @@ The swap($s1, $s2) method finds the line containing string $s1 and finds
 the line containg string $s2 and swaps both lines.
 
 =cut
+=head2   at( $idx )
+
+The at($idx) sets the index for which actions such as insert($line) will
+take place.
+
+=cut
+=head2   insert( $line )
+
+The insert( $line ) method inserts the $line at the index location
+specified. The index location is typically by an earlier call to
+at($idx). For example:
+
+    $self->at(0)->insert('Start of file')
+
+=cut
+
 =head1 AUTHOR
 
 Hoe Kit CHEW, C<< <hoekit at gmail.com> >>

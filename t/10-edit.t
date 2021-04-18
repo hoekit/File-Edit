@@ -1,6 +1,6 @@
 #!perl
 use strict; use warnings; use utf8; use 5.10.0;
-use Test::More tests => 13;
+use Test::More tests => 14;
 use Data::Dumper;
 
 use lib qw(./lib);
@@ -114,6 +114,17 @@ $tmp = File::Edit->new()
                  ->swap('Do this', 'do that');
 $got = $tmp->_lines->[1];
 $exp = "  Do this first\n";
+is($got, $exp, $msg);
+}
+
+{ ## insert_line_at("  Inserted line\n", 1) inserts correctly
+$msg = 'insert_line_at("  Inserted line\n", 1) inserts correctly';
+$tmp = File::Edit->new()
+                 ->text("  Line index 0\n  Line index 1\n  Line index 2")
+                 ->at(1)->insert("  Inserted line\n")
+                 ;
+$got = $tmp->_lines->[1];
+$exp = "  Inserted line\n";
 is($got, $exp, $msg);
 }
 
