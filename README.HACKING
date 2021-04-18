@@ -1,0 +1,15 @@
+# README.HACKING
+
+Describes how to make changes to this module.
+
+## Version Updates
+
+    - Update Changes file
+    - Update version number
+        - $VERSION in lib/File/Edit.pm
+    - Update the README
+        - perldoc -t File::Edit > README
+    - Build tarball
+        - perl Makefile.PL; make test; make dist; make clean
+    - Upload latest tarball to CPAN
+
