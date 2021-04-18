@@ -24,6 +24,13 @@ SYNOPSIS
                   ->save('todo.txt')
                   ;
 
+        # Insert at line index, save to file
+        File::Edit->new()
+                  ->text("  Line index 0\n  Line index 1\n  Line index 2")
+                  ->at(1)->insert('  Inserted line\n')
+                  ->save('todo.txt')
+                  ;
+
 METHODS
   new
         my $fe = File::Edit->new("some_file.txt");
@@ -48,6 +55,17 @@ METHODS
   swap( $text_1, $text_2 )
     The swap($s1, $s2) method finds the line containing string $s1 and finds
     the line containg string $s2 and swaps both lines.
+
+  at( $idx )
+    The at($idx) sets the index for which actions such as insert($line) will
+    take place.
+
+  insert( $line )
+    The insert( $line ) method inserts the $line at the index location
+    specified. The index location is typically by an earlier call to
+    at($idx). For example:
+
+        $self->at(0)->insert('Start of file')
 
 AUTHOR
     Hoe Kit CHEW, "<hoekit at gmail.com>"
